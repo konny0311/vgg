@@ -2,38 +2,40 @@ import numpy as np
 import glob
 import os
 import cv2
-import shutil
-import sys
-from tqdm import tqdm
 from keras.engine.topology import Input
 from keras.models import Sequential, Model
 from keras.layers.core import Dense, Dropout, Flatten, Activation
-from keras.layers import  Conv1D, Conv2D, MaxPooling2D, UpSampling2D, concatenate
+from keras.layers import  Conv1D, Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 import keras.backend as K
 from keras.optimizers import Adam
-from keras.utils import plot_model
-import keras.callbacks as KC
-from history_checkpoint_callback import HistoryCheckpoint, TargetHistory
-from tools import draw_line, overlay
 
 class VGG19():
 
     def __init__(self, n_classes=2, lr=0.0001):
-
+        """
+        create a VGG19 model.
+        """
         self.n_classes = n_classes
         self.lr = lr
         self.model = self._create_model()
 
     def _add_batch_norm_activation(self, input_layer, activation_type='relu'):
-
+        """
+        This is a wrapper method for a layers.
+        BatchNormalization -> Activation
+        """
         layer_b = BatchNormalization()(input_layer)
         layer_a = Activation(activation=activation_type)(layer_b)
 
         return layer_a
 
     def _create_four_conv_layers(self, input_layer, filter=256, padding_flag='same'):
-
+        """
+        This is a wrapper method for a layers.
+        Conv2D -> Conv2D -> Conv2D -> Conv2D -> MaxPooling2D
+        Each Conv2D includes batch normalization and activation
+        """
         sub_layer_1 = Conv2D(filter, 3, padding=padding_flag)(input_layer)
         sub_layer_1 = self._add_batch_norm_activation(sub_layer_1)
         sub_layer_2 = Conv2D(filter, 3, padding=padding_flag)(sub_layer_1)
@@ -47,8 +49,7 @@ class VGG19():
         return output_layer
 
     def _create_model(self):
-        """
-        """
+
         padding_flag = 'same'
         first_filter = 64
         second_filter = 128
@@ -81,7 +82,10 @@ class VGG19():
         return model
 
     def predict(self, data, ret=False):
-        
+        """
+        data: Data class
+        ret: put True if you need a list of wrong answer files
+        """
         answers = np.argmax(self.model.predict(data.images), axis=1)
         matrix = np.zeros((self.n_classes, self.n_classes), dtype=int)
         wrong_files = []

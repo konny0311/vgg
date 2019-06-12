@@ -30,7 +30,6 @@ cat_test_dir = os.path.join(base_dir, test, cat)
 
 train_data = Data([dog_train_dir, cat_train_dir])
 train_data.prepare_for_train()
-print(train_data.images.shape)
 val_data = Data([dog_val_dir, cat_val_dir])
 val_data.prepare_for_train()
 test_data = Data([dog_test_dir, cat_test_dir], filename_flag=True)

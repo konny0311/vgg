@@ -4,7 +4,6 @@ import os
 import glob
 from keras.utils import np_utils
 
-
 SIZE = 224
 
 class Data():
@@ -12,6 +11,7 @@ class Data():
     def __init__(self, image_dirs, filename_flag=False):
         """
         image_dirs: list of class image directories
+        filename_flag: put True if you need a filename object in an Data instance
         """
         self.filename_flag = filename_flag
         self.image_dirs = image_dirs
@@ -37,11 +37,12 @@ class Data():
             self.answers = np.array(tmp_answers)
 
     def _resize_for_model(self, image):
-        # np形式のimageを特定の大きさにresizeする。
         return cv2.resize(image, (SIZE, SIZE))
     
     def prepare_for_train(self):
-        
+        """
+        preparation to put data into a model
+        """
         self.images = self.images.astype('float32')
         self.images /= 255
         self.answers = np_utils.to_categorical(self.answers, self.n_classes)
