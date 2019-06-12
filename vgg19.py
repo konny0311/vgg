@@ -73,7 +73,8 @@ class VGG19():
         layer_10 = Dense(first_dense_units)(layer_9)
         layer_11 = Dense(first_dense_units)(layer_10)
         layer_12 = Dense(second_dense_units)(layer_11)
-        output = Dense(self.n_classes, activation='sigmoid')(layer_12)
+        flatten = Flatten()(layer_12)
+        output = Dense(self.n_classes, activation='sigmoid')(flatten)
         model = Model(inputs=[input_layer], outputs=[output])
         model.compile(loss='categorical_crossentropy', optimizer=Adam(lr=self.lr), metrics=['accuracy'])
         
