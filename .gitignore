@@ -1,0 +1,8 @@
+.vscode/
+logs/
+.DS_Store
+__pycache__/
+__MACOSX/
+*.zip
+*.png
+*.jpg
