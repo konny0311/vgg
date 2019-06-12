@@ -19,9 +19,10 @@ from tools import draw_line, overlay
 
 class VGG19():
 
-    def __init__(self, n_classes=2):
+    def __init__(self, n_classes=2, lr=0.0001):
 
         self.n_classes = n_classes
+        self.lr = lr
         self.model = self._create_model()
 
     def _add_batch_norm_activation(self, input_layer, activation_type='relu'):
@@ -74,6 +75,7 @@ class VGG19():
         layer_12 = Dense(second_dense_units)(layer_11)
         output = Dense(self.n_classes, activation='sigmoid')(layer_12)
         model = Model(inputs=[input_layer], outputs=[output])
+        model.compile(loss='categorical_crossentropy', optimizer=Adam(lr=self.lr), metrics=['accuracy'])
         
         return model
 
