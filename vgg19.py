@@ -80,7 +80,28 @@ class VGG19():
         
         return model
 
+    def predict(self, data, ret=False):
         
+        answers = np.argmax(self.model.predict(data.images), axis=1)
+        matrix = np.zeros((self.n_classes, self.n_classes), dtype=int)
+        wrong_files = []
+        for i, pre in enumerate(answers):
+            correct_answer = data.answers[i]
+            matrix[pre][correct_answer] += 1
+            if pre != correct_answer:
+                wrong_files.append(data.filenames[i])
+
+        for i in range(self.n_classes):
+            tp = matrix[i][i]
+            precision = tp / np.sum(matrix[i, :])
+            print('precision class_id{} is '.format(i+1), round(precision, 4))
+            recall = tp / np.sum(matrix[:, i])
+            print('recall class_id{} is '.format(i+1), round(recall, 4))
+
+        if ret:
+            return wrong_files
+                
+
 if __name__ == '__main__':
     vgg = VGG19(n_classes=4)
     vgg.model.summary()
