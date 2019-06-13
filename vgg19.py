@@ -91,7 +91,8 @@ class VGG19():
         wrong_files = []
         for i, pre in enumerate(answers):
             correct_answer = data.answers[i]
-            matrix[pre][correct_answer] += 1
+            correct_answer = np.argmax(correct_answer) #one-hot-vectorからintへ変換
+            matrix[int(pre)][int(correct_answer)] += 1
             if pre != correct_answer:
                 wrong_files.append(data.filenames[i])
 
